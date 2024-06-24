@@ -3,11 +3,13 @@ package com.CRUD_Project.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nonapi.io.github.classgraph.json.Id;
 
 @Entity
 @Data
@@ -19,7 +21,12 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String name;
-    private Author idAuthor; //будем указывать id автора
-    private GenreBook idGenre; //будем указывать id жанра
-}
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author idAuthor;
+
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private GenreBook idGenre;
+}
