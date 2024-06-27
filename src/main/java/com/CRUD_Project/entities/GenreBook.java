@@ -25,4 +25,9 @@ public class GenreBook {
 
     @OneToMany // указывает на поле idGenre в Book
     private List<Book> books; // список книг этого жанра
+
+    public GenreBook(String name, List<Book> books) {
+        this.name = name;
+        this.books = books;
+    }
 }

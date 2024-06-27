@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+//Макс лох
 
 @Entity
 @Data
@@ -20,4 +21,9 @@ public class Reader {
     private Integer id;
     private String name;
     private String email;
+
+    public Reader(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }

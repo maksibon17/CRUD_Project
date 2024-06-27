@@ -31,4 +31,11 @@ public class Extradition {
 
     private String dateIssue; // дата выдачи
     private String dateReturn; // дата возврата
+
+    public Extradition(Book idBook, Reader idReader, String dateIssue, String dateReturn) {
+        this.idBook = idBook;
+        this.idReader = idReader;
+        this.dateIssue = dateIssue;
+        this.dateReturn = dateReturn;
+    }
 }

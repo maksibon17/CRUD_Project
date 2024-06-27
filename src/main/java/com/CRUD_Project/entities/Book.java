@@ -29,4 +29,10 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "genre_id")
     private GenreBook idGenre;
+
+    public Book(String name, Author idAuthor, GenreBook idGenre) {
+        this.name = name;
+        this.idAuthor = idAuthor;
+        this.idGenre = idGenre;
+    }
 }

@@ -21,4 +21,10 @@ public class Author {
     private String name;
     private String surname;
     private String dateOfBirthday;
+
+    public Author(String name, String surname, String dateOfBirthday) {
+        this.name = name;
+        this.surname = surname;
+        this.dateOfBirthday = dateOfBirthday;
+    }
 }
