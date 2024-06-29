@@ -5,24 +5,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class GenreBook {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @Setter
+    @Getter
     private String name; // название жанра
 
+    @Setter
+    @Getter
     @OneToMany // указывает на поле idGenre в Book
     private List<Book> books; // список книг этого жанра
 
@@ -30,4 +30,21 @@ public class GenreBook {
         this.name = name;
         this.books = books;
     }
+    public GenreBook(){}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
 }
