@@ -1,8 +1,6 @@
 package com.CRUD_Project.services;
 
-import com.CRUD_Project.entities.Book;
-import com.CRUD_Project.entities.Extradition;
-import com.CRUD_Project.entities.Reader;
+import com.CRUD_Project.entities.*;
 import com.CRUD_Project.repositories.BookRepository;
 import com.CRUD_Project.repositories.ExtraditionRepository;
 import com.CRUD_Project.repositories.ReaderRepository;
@@ -28,7 +26,7 @@ public class ExtraditionService {
 
     public String findExtradition(Integer id) {
         Optional<Extradition> extradition = extraditionRepository.findById(id);
-        return extradition.map(value -> "Найдена выдача: книга " + value.getIdBook().getName() + " читатель " + value.getIdReader().getName() + ", дата выдачи: " + value.getDateIssue() + ", дата возврата: " + value.getDateReturn())
+        return extradition.map(value -> "Найдена выдача: книга " + value.getBook().getTitle() + " читатель " + value.getReader().getName() + ", дата выдачи: " + value.getDateIssue() + ", дата возврата: " + value.getDateReturn())
                 .orElse("Выдачи с id " + id + " не существует!");
     }
 
@@ -37,16 +35,21 @@ public class ExtraditionService {
     }
 
     public String create(Integer bookId, Integer readerId, String dateIssue, String dateReturn) {
-        Optional<Book> book = bookRepository.findById(bookId);
-        Optional<Reader> reader = readerRepository.findById(readerId);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Книга с id" + bookId +  "не найдена"));
 
-        if (book.isPresent() && reader.isPresent()) {
-            Extradition extradition = new Extradition(book.get(), reader.get(), dateIssue, dateReturn);
-            extraditionRepository.save(extradition);
-            return "Выдача создана успешно!";
-        } else {
-            return "Книга или Читатель не найдены!";
-        }
+        Reader reader = readerRepository.findById(readerId)
+                .orElseThrow(() -> new RuntimeException("Читатель с id" + readerId +  "не найден"));
+
+        Extradition extradition = Extradition.builder()
+                .book(book)
+                .reader(reader)
+                .dateIssue(dateIssue)
+                .dateReturn(dateReturn)
+                .build();
+
+        extraditionRepository.save(extradition);
+        return "Выдача создана успешно!";
     }
 
     public String delete(Integer id) {
@@ -64,8 +67,8 @@ public class ExtraditionService {
 
         if (extraditionOptional.isPresent() && book.isPresent() && reader.isPresent()) {
             Extradition extradition = extraditionOptional.get();
-            extradition.setIdBook(book.get());
-            extradition.setIdReader(reader.get());
+            extradition.setBook(book.get());
+            extradition.setReader(reader.get());
             extradition.setDateIssue(dateIssue);
             extradition.setDateReturn(dateReturn);
             extraditionRepository.save(extradition);
