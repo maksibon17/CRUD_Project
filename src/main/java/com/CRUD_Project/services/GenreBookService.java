@@ -1,7 +1,7 @@
 package com.CRUD_Project.services;
 
 import com.CRUD_Project.entities.GenreBook;
-import com.CRUD_Project.repository.GenreBookRepository;
+import com.CRUD_Project.repositories.GenreBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

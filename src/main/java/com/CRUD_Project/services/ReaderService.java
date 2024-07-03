@@ -3,8 +3,7 @@ package com.CRUD_Project.services;
 import com.CRUD_Project.dto.ReaderDTO;
 import com.CRUD_Project.entities.Reader;
 import com.CRUD_Project.mappers.ReaderMapper;
-import com.CRUD_Project.repository.ReaderRepository;
-import org.slf4j.Logger;
+import com.CRUD_Project.repositories.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,13 +18,16 @@ public class ReaderService {
 
     public ReaderService() {
     }
-    public String findReader(Integer id) {
+    public ResponseEntity<ReaderDTO> findReader(Integer id) {
         Optional<Reader> reader = readerRepository.findById(id);
-        return reader.map(value -> "Найден читатель: " + value.getName() + " с почтой " + value.getEmail())
-                .orElse("Пользователя с id " + id + " не существует!");
+        return reader.isPresent()
+                ? ResponseEntity.ok(ReaderMapper.INSTANCE.toDTO(reader.get()))
+                : ResponseEntity.notFound().build();
     }
-    public List<Reader> findAll() {
-        return readerRepository.findAll();
+    public ResponseEntity<List<ReaderDTO>> findAll() {
+        List<Reader> readers = readerRepository.findAll();
+        List<ReaderDTO> readerDTOList = ReaderMapper.INSTANCE.toDTOList(readers);
+        return ResponseEntity.ok(readerDTOList);
     }
 
     public ResponseEntity<?> create(ReaderDTO readerDTO) {
@@ -39,20 +41,26 @@ public class ReaderService {
         }
     }
 
-    public String delete(Integer id) {
-        Optional<Reader> readerOptional = readerRepository.findById(id);
-        if (readerOptional.isPresent()) {
-            readerRepository.delete(readerOptional.get());
-            return "Пользователь с id " + id + " был удалён";
-        } else return "Пользователя с id " + id + " не существует!";
+    public ResponseEntity<String> delete(Integer id) {
+        Optional<Reader> existingReader = readerRepository.findById(id);
+        if (existingReader.isPresent()) {
+            readerRepository.deleteById(id);
+            return ResponseEntity.ok("Читатель с id " + id + " успешно удалён.");
+        } else {
+            return ResponseEntity.status(404).body("Пользователя с id " + id + " не существует!");
+        }
     }
 
-    public String edit(Integer id, String name) {
-        Optional<Reader> readerOptional = readerRepository.findById(id);
-        if (readerOptional.isPresent()) {
-            readerOptional.get().setName(name);
-            readerRepository.save(readerOptional.get());
-            return "Пользователь с id " + id + " был изменён. Теперь его зовут " + name;
-        } else return "Пользователя с id " + id + " не существует!";
+    public ResponseEntity<ReaderDTO> edit(Integer id, ReaderDTO readerDTO) {
+        Optional<Reader> existingReader = readerRepository.findById(id);
+        if (existingReader.isPresent()) {
+            Reader reader = existingReader.get();
+            reader.setName(readerDTO.name());
+            Reader updatedReader = readerRepository.save(reader);
+            ReaderDTO updatedReaderDTO = ReaderMapper.INSTANCE.toDTO(updatedReader);
+            return ResponseEntity.ok(updatedReaderDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
