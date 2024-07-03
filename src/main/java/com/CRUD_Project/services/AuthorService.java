@@ -1,8 +1,14 @@
 package com.CRUD_Project.services;
 
+import com.CRUD_Project.dto.AuthorDTO;
+import com.CRUD_Project.dto.ReaderDTO;
 import com.CRUD_Project.entities.Author;
-import com.CRUD_Project.repository.AuthorRepository;
+import com.CRUD_Project.entities.Reader;
+import com.CRUD_Project.mappers.AuthorMapper;
+import com.CRUD_Project.mappers.ReaderMapper;
+import com.CRUD_Project.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,40 +21,46 @@ public class AuthorService {
 
     public AuthorService() {
     }
-
-    public String findAuthor(Integer id) {
+    public ResponseEntity<AuthorDTO> findAuthor(Integer id) {
         Optional<Author> author = authorRepository.findById(id);
-        return author.map(value -> "Найден автор: " + value.getName() + " " + value.getSurname() + ", дата рождения: " + value.getDateOfBirthday())
-                .orElse("Автора с id " + id + " не существует!");
+        return author.isPresent()
+                ? ResponseEntity.ok(AuthorMapper.INSTANCE.toDTO(author.get()))
+                : ResponseEntity.notFound().build();
+    }
+    public ResponseEntity<List<AuthorDTO>> findAll() {
+        List<Author> authors = authorRepository.findAll();
+        List<AuthorDTO> authorDTOList = AuthorMapper.INSTANCE.toDTOList(authors);
+        return ResponseEntity.ok(authorDTOList);
     }
 
-    public List<Author> findAll() {
-        return authorRepository.findAll();
+    public ResponseEntity<AuthorDTO> create(AuthorDTO authorDTO) {
+        Author author = AuthorMapper.INSTANCE.toEntity(authorDTO);
+        Author savedAuthor = authorRepository.save(author);
+        AuthorDTO savedAuthorDTO = AuthorMapper.INSTANCE.toDTO(savedAuthor);
+        return ResponseEntity.ok(savedAuthorDTO);
     }
 
-    public String create(String name, String surname, String dateOfBirthday) {
-        Author author = new Author(name, surname, dateOfBirthday);
-        authorRepository.save(author);
-        return "Автор с именем " + name + " и фамилией " + surname + " создан успешно!";
+    public ResponseEntity<String> delete(Integer id) {
+        Optional<Author> existingReader = authorRepository.findById(id);
+        if (existingReader.isPresent()) {
+            authorRepository.deleteById(id);
+            return ResponseEntity.ok("Читатель с id " + id + " успешно удалён.");
+        } else {
+            return ResponseEntity.status(404).body("Пользователя с id " + id + " не существует!");
+        }
     }
 
-    public String delete(Integer id) {
-        Optional<Author> authorOptional = authorRepository.findById(id);
-        if (authorOptional.isPresent()) {
-            authorRepository.delete(authorOptional.get());
-            return "Автор с id " + id + " был удалён";
-        } else return "Автора с id " + id + " не существует!";
-    }
-
-    public String edit(Integer id, String name, String surname, String dateOfBirthday) {
-        Optional<Author> authorOptional = authorRepository.findById(id);
-        if (authorOptional.isPresent()) {
-            Author author = authorOptional.get();
-            author.setName(name);
-            author.setSurname(surname);
-            author.setDateOfBirthday(dateOfBirthday);
-            authorRepository.save(author);
-            return "Автор с id " + id + " был изменён. Теперь его зовут " + name + " " + surname + ", дата рождения: " + dateOfBirthday;
-        } else return "Автора с id " + id + " не существует!";
+    public ResponseEntity<AuthorDTO> edit(Integer id, AuthorDTO authorDTO) {
+        Optional<Author> existingAuthor = authorRepository.findById(id);
+        if (existingAuthor.isPresent()) {
+            Author author = existingAuthor.get();
+            author.setName(authorDTO.name());
+            author.setSurname(authorDTO.surname());
+            Author updatedAuthor = authorRepository.save(author);
+            AuthorDTO updatedAuthorDTO = AuthorMapper.INSTANCE.toDTO(updatedAuthor);
+            return ResponseEntity.ok(updatedAuthorDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

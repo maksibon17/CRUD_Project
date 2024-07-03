@@ -3,9 +3,9 @@ package com.CRUD_Project.services;
 import com.CRUD_Project.entities.Author;
 import com.CRUD_Project.entities.Book;
 import com.CRUD_Project.entities.GenreBook;
-import com.CRUD_Project.repository.AuthorRepository;
-import com.CRUD_Project.repository.BookRepository;
-import com.CRUD_Project.repository.GenreBookRepository;
+import com.CRUD_Project.repositories.AuthorRepository;
+import com.CRUD_Project.repositories.BookRepository;
+import com.CRUD_Project.repositories.GenreBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

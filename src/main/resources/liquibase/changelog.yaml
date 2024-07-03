@@ -20,6 +20,27 @@ databaseChangeLog:
                     nullable: false
 
         - createTable:
+            tableName: author
+            columns:
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - createTable:
             tableName: book
             columns:
               - column:
@@ -35,10 +56,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: author
-                  type: VARCHAR(255)
+                  name: author_id
+                  type: INTEGER
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_book_author
+                    references: author(id)
               - column:
                   name: genre_id
                   type: INTEGER
@@ -136,14 +159,34 @@ databaseChangeLog:
                   value: "Science"
 
         - insert:
+            tableName: author
+            columns:
+              - column:
+                  name: name
+                  value: "Author1"
+              - column:
+                  name: surname
+                  value: "Surname1"
+
+        - insert:
+            tableName: author
+            columns:
+              - column:
+                  name: name
+                  value: "Author2"
+              - column:
+                  name: surname
+                  value: "Surname2"
+
+        - insert:
             tableName: book
             columns:
               - column:
                   name: title
                   value: "BookTitle1"
               - column:
-                  name: author
-                  value: "Author1"
+                  name: author_id
+                  value: 1
               - column:
                   name: genre_id
                   value: 1
@@ -154,11 +197,12 @@ databaseChangeLog:
                   name: title
                   value: "BookTitle2"
               - column:
-                  name: author
-                  value: "Author2"
+                  name: author_id
+                  value: 2
               - column:
                   name: genre_id
                   value: 2
+
         - insert:
             tableName: reader
             columns:
@@ -177,3 +221,34 @@ databaseChangeLog:
               - column:
                   name: email
                   value: "reader2@example.com"
+
+        - insert:
+            tableName: extradition
+            columns:
+              - column:
+                  name: book_id
+                  value: 1
+              - column:
+                  name: reader_id
+                  value: 1
+              - column:
+                  name: date_issue
+                  value: "2024-01-01"
+              - column:
+                  name: date_return
+                  value: "2024-01-15"
+        - insert:
+            tableName: extradition
+            columns:
+              - column:
+                  name: book_id
+                  value: 2
+              - column:
+                  name: reader_id
+                  value: 2
+              - column:
+                  name: date_issue
+                  value: "2024-02-01"
+              - column:
+                  name: date_return
+                  value: "2024-02-15"

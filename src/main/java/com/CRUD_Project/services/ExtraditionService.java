@@ -3,9 +3,9 @@ package com.CRUD_Project.services;
 import com.CRUD_Project.entities.Book;
 import com.CRUD_Project.entities.Extradition;
 import com.CRUD_Project.entities.Reader;
-import com.CRUD_Project.repository.BookRepository;
-import com.CRUD_Project.repository.ExtraditionRepository;
-import com.CRUD_Project.repository.ReaderRepository;
+import com.CRUD_Project.repositories.BookRepository;
+import com.CRUD_Project.repositories.ExtraditionRepository;
+import com.CRUD_Project.repositories.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
