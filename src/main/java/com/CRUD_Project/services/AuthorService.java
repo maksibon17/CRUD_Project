@@ -18,7 +18,7 @@ public class AuthorService {
 
     public String findAuthor(Integer id) {
         Optional<Author> author = authorRepository.findById(id);
-        return author.map(value -> "Найден автор: " + value.getName() + " " + value.getSurname() + ", дата рождения: " + value.getDateOfBirthday())
+        return author.map(value -> "Найден автор: " + value.getName() + " " + value.getSurname())
                 .orElse("Автора с id " + id + " не существует!");
     }
 
@@ -46,7 +46,6 @@ public class AuthorService {
             Author author = authorOptional.get();
             author.setName(name);
             author.setSurname(surname);
-            author.setDateOfBirthday(dateOfBirthday);
             authorRepository.save(author);
             return "Автор с id " + id + " был изменён. Теперь его зовут " + name + " " + surname + ", дата рождения: " + dateOfBirthday;
         } else return "Автора с id " + id + " не существует!";

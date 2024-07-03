@@ -11,10 +11,11 @@ import lombok.*;
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Extradition {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Setter
@@ -40,39 +41,6 @@ public class Extradition {
         this.idBook = idBook;
         this.idReader = idReader;
         this.dateIssue = dateIssue;
-        this.dateReturn = dateReturn;
-    }
-    public Extradition(){}
-
-    public Book getIdBook() {
-        return idBook;
-    }
-
-    public void setIdBook(Book idBook) {
-        this.idBook = idBook;
-    }
-
-    public Reader getIdReader() {
-        return idReader;
-    }
-
-    public void setIdReader(Reader idReader) {
-        this.idReader = idReader;
-    }
-
-    public String getDateIssue() {
-        return dateIssue;
-    }
-
-    public void setDateIssue(String dateIssue) {
-        this.dateIssue = dateIssue;
-    }
-
-    public String getDateReturn() {
-        return dateReturn;
-    }
-
-    public void setDateReturn(String dateReturn) {
         this.dateReturn = dateReturn;
     }
 

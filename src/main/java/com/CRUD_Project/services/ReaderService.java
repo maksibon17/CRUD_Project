@@ -1,9 +1,12 @@
 package com.CRUD_Project.services;
 
+import com.CRUD_Project.dto.ReaderDTO;
 import com.CRUD_Project.entities.Reader;
+import com.CRUD_Project.mappers.ReaderMapper;
 import com.CRUD_Project.repository.ReaderRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,12 +28,14 @@ public class ReaderService {
         return readerRepository.findAll();
     }
 
-    public String create(String name, String email) {
-        if (readerRepository.findByEmail(email) != null) return "Пользователь с почтой " + email + " уже существует!";
-        else {
-            Reader reader = new Reader(name, email);
-            readerRepository.save(reader);
-            return "Пользователь с именем " + name + " и почтой " + email + " создан успешно!";
+    public ResponseEntity<?> create(ReaderDTO readerDTO) {
+        if (readerRepository.findByEmail(readerDTO.email()) != null) {
+            return ResponseEntity.badRequest().body("Пользователь с почтой " + readerDTO.email() + " уже существует!");
+        } else {
+            Reader reader = ReaderMapper.INSTANCE.toEntity(readerDTO);
+            Reader savedReader = readerRepository.save(reader);
+            ReaderDTO savedReaderDTO = ReaderMapper.INSTANCE.toDTO(savedReader);
+            return ResponseEntity.ok(savedReaderDTO);
         }
     }
 

@@ -12,10 +12,11 @@ import java.util.List;
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class GenreBook {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Setter
     @Getter
@@ -28,22 +29,6 @@ public class GenreBook {
 
     public GenreBook(String name, List<Book> books) {
         this.name = name;
-        this.books = books;
-    }
-    public GenreBook(){}
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
         this.books = books;
     }
 
