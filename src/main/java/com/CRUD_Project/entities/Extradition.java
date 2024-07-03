@@ -22,13 +22,13 @@ public class Extradition {
     @Getter
     @ManyToOne
     @JoinColumn(name = "book_id")
-    private Book book;
+    private Book idBook;
 
     @Setter
     @Getter
     @ManyToOne
     @JoinColumn(name = "reader_id")
-    private Reader reader;
+    private Reader idReader;
 
     @Setter
     @Getter
@@ -36,5 +36,12 @@ public class Extradition {
     @Setter
     @Getter
     private String dateReturn; // дата возврата
+
+    public Extradition(Book idBook, Reader idReader, String dateIssue, String dateReturn) {
+        this.idBook = idBook;
+        this.idReader = idReader;
+        this.dateIssue = dateIssue;
+        this.dateReturn = dateReturn;
+    }
 
 }

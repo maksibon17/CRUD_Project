@@ -26,7 +26,7 @@ public class BookService {
 
     public String findBook(Integer id) {
         Optional<Book> book = bookRepository.findById(id);
-        return book.map(value -> "Найдена книга: " + value.getTitle() + ", автор: " + value.getAuthor().getName() + ", жанр: " + value.getGenreBook().getName())
+        return book.map(value -> "Найдена книга: " + value.getName() + ", автор: " + value.getIdAuthor().getName() + ", жанр: " + value.getIdGenre().getName())
                 .orElse("Книги с id " + id + " не существует!");
     }
 
@@ -34,22 +34,20 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    public String create(String name, Integer authorId, Integer genreId) {
+        Optional<Author> author = authorRepository.findById(authorId);
+        Optional<GenreBook> genre = genreBookRepository.findById(genreId);
 
-    public String create(String title, Integer authorId, Integer genreId) {
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Автор с id " + authorId +  " не неайден"));
-
-        GenreBook genreBook = genreBookRepository.findById(genreId)
-                .orElseThrow(() -> new RuntimeException("Жанр с id" + authorId +  " не найден"));
-
-        Book book = Book.builder()
-                .title(title)
-                .author(author)
-                .genreBook(genreBook)
-                .build();
-
-        bookRepository.save(book);
-        return "Книга с названием " + title + " создана успешно!";
+        if (author.isPresent() && genre.isPresent()) {
+            Book book = new Book();
+            book.setName(name);
+            book.setIdAuthor(author.get());
+            book.setIdGenre(genre.get());
+            bookRepository.save(book);
+            return "Книга с названием " + name + " создана успешно!";
+        } else {
+            return "Автор или жанр не найдены!";
+        }
     }
 
     public String delete(Integer id) {
@@ -64,7 +62,7 @@ public class BookService {
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            book.setTitle(name);
+            book.setName(name);
             bookRepository.save(book);
             return "Книга с id " + id + " была изменена. Теперь её название " + name;
         } else return "Книги с id " + id + " не существует!";
