@@ -28,7 +28,7 @@ public class ExtraditionService {
 
     public String findExtradition(Integer id) {
         Optional<Extradition> extradition = extraditionRepository.findById(id);
-        return extradition.map(value -> "Найдена выдача: книга " + value.getIdBook().getName() + " читатель " + value.getIdReader().getName() + ", дата выдачи: " + value.getDateIssue() + ", дата возврата: " + value.getDateReturn())
+        return extradition.map(value -> "Найдена выдача: книга " + value.getIdBook().getTitle() + " читатель " + value.getIdReader().getName() + ", дата выдачи: " + value.getDateIssue() + ", дата возврата: " + value.getDateReturn())
                 .orElse("Выдачи с id " + id + " не существует!");
     }
 

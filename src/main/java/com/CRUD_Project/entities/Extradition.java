@@ -43,5 +43,4 @@ public class Extradition {
         this.dateIssue = dateIssue;
         this.dateReturn = dateReturn;
     }
-
 }

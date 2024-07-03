@@ -18,18 +18,7 @@ public class GenreBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Setter
-    @Getter
-    private String name; // название жанра
 
-    @Setter
-    @Getter
-    @OneToMany // указывает на поле idGenre в Book
-    private List<Book> books; // список книг этого жанра
 
-    public GenreBook(String name, List<Book> books) {
-        this.name = name;
-        this.books = books;
-    }
-
+    private String name;
 }
