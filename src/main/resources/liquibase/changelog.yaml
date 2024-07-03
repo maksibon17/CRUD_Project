@@ -126,6 +126,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
+
   - changeSet:
       id: 2
       author: postgres
