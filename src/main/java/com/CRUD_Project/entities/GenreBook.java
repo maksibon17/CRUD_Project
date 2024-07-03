@@ -8,7 +8,7 @@ import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.util.List;
-
+//:)
 @Entity
 @Data
 @Builder
@@ -18,7 +18,6 @@ public class GenreBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
 
     private String name;
 }
