@@ -26,7 +26,7 @@ public class BookService {
 
     public String findBook(Integer id) {
         Optional<Book> book = bookRepository.findById(id);
-        return book.map(value -> "Найдена книга: " + value.getName() + ", автор: " + value.getIdAuthor().getName() + ", жанр: " + value.getIdGenre().getName())
+        return book.map(value -> "Найдена книга: " + value.getTitle() + ", автор: " + value.getAuthor().getName() + ", жанр: " + value.getGenreBook().getName())
                 .orElse("Книги с id " + id + " не существует!");
     }
 
@@ -34,22 +34,23 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public String create(String name, Integer authorId, Integer genreId) {
-        Optional<Author> author = authorRepository.findById(authorId);
-        Optional<GenreBook> genre = genreBookRepository.findById(genreId);
+    public String create(String title, Integer authorId, Integer genreId) {
+        // Получаем автора и жанр из базы данных по их идентификаторам
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("Книга с id" + authorId +  "не найдена"));
 
-        if (author.isPresent() && genre.isPresent()) {
-            Book book = new Book();
-            book.setName(name);
-            book.setIdAuthor(author.get());
-            book.setIdGenre(genre.get());
-            bookRepository.save(book);
-            return "Книга с названием " + name + " создана успешно!";
-        } else {
-            return "Автор или жанр не найдены!";
-        }
+        GenreBook genreBook = genreBookRepository.findById(genreId)
+                .orElseThrow(() -> new RuntimeException("Автоор с id" + genreId +  "не найден"));
+
+        Book book = Book.builder()
+                .title(title)
+                .author(author)
+                .genreBook(genreBook)
+                .build();
+
+        bookRepository.save(book);
+        return "Книга под названием " + title + "создана";
     }
-
     public String delete(Integer id) {
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isPresent()) {
@@ -58,13 +59,13 @@ public class BookService {
         } else return "Книги с id " + id + " не существует!";
     }
 
-    public String edit(Integer id, String name) {
+    public String edit(Integer id, String title) {
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
-            book.setName(name);
+            book.setTitle(title);
             bookRepository.save(book);
-            return "Книга с id " + id + " была изменена. Теперь её название " + name;
+            return "Книга с id " + id + " была изменена. Теперь её название " + title;
         } else return "Книги с id " + id + " не существует!";
     }
 }

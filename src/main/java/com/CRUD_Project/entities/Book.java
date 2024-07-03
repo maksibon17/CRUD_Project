@@ -19,20 +19,13 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    private String title;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Author idAuthor;
+    @JoinColumn(name = "genre_id", nullable = false)
+    private GenreBook genreBook;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id")
-    private GenreBook idGenre;
-
-    public Book(String name, Author idAuthor, GenreBook idGenre) {
-        this.name = name;
-        this.idAuthor = idAuthor;
-        this.idGenre = idGenre;
-    }
-
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
 }

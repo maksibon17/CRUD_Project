@@ -27,7 +27,8 @@ public class GenreBookService {
     }
 
     public String create(String name) {
-        GenreBook genre = new GenreBook(name, null);
+        GenreBook genre = new GenreBook();
+        genre.setName(name);
         genreBookRepository.save(genre);
         return "Жанр с названием " + name + " создан успешно!";
     }
