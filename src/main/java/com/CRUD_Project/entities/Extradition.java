@@ -18,23 +18,15 @@ public class Extradition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Setter
-    @Getter
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Setter
-    @Getter
     @ManyToOne
     @JoinColumn(name = "reader_id")
     private Reader reader;
 
-    @Setter
-    @Getter
     private String dateIssue; // дата выдачи
-    @Setter
-    @Getter
-    private String dateReturn; // дата возврата
 
+    private String dateReturn; // дата возврата
 }
