@@ -21,26 +21,26 @@ public class AuthorService {
 
     public AuthorService() {
     }
-    public ResponseEntity<AuthorDTO> findAuthor(Integer id) {
+    public ResponseEntity<AuthorDTO> getAuthorById(Integer id) {
         Optional<Author> author = authorRepository.findById(id);
         return author.isPresent()
                 ? ResponseEntity.ok(AuthorMapper.INSTANCE.toDTO(author.get()))
                 : ResponseEntity.notFound().build();
     }
-    public ResponseEntity<List<AuthorDTO>> findAll() {
+    public ResponseEntity<List<AuthorDTO>> gelAllAuthors() {
         List<Author> authors = authorRepository.findAll();
         List<AuthorDTO> authorDTOList = AuthorMapper.INSTANCE.toDTOList(authors);
         return ResponseEntity.ok(authorDTOList);
     }
 
-    public ResponseEntity<AuthorDTO> create(AuthorDTO authorDTO) {
+    public ResponseEntity<AuthorDTO> createAuthor(AuthorDTO authorDTO) {
         Author author = AuthorMapper.INSTANCE.toEntity(authorDTO);
         Author savedAuthor = authorRepository.save(author);
         AuthorDTO savedAuthorDTO = AuthorMapper.INSTANCE.toDTO(savedAuthor);
         return ResponseEntity.ok(savedAuthorDTO);
     }
 
-    public ResponseEntity<String> delete(Integer id) {
+    public ResponseEntity<String> deleteAuthor(Integer id) {
         Optional<Author> existingReader = authorRepository.findById(id);
         if (existingReader.isPresent()) {
             authorRepository.deleteById(id);
@@ -50,7 +50,7 @@ public class AuthorService {
         }
     }
 
-    public ResponseEntity<AuthorDTO> edit(Integer id, AuthorDTO authorDTO) {
+    public ResponseEntity<AuthorDTO> updateAuthor(Integer id, AuthorDTO authorDTO) {
         Optional<Author> existingAuthor = authorRepository.findById(id);
         if (existingAuthor.isPresent()) {
             Author author = existingAuthor.get();

@@ -8,6 +8,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Data
 @Builder
@@ -26,7 +29,7 @@ public class Extradition {
     @JoinColumn(name = "reader_id")
     private Reader reader;
 
-    private String dateIssue; // дата выдачи
+    private LocalDate dateIssue; // дата выдачи
 
-    private String dateReturn; // дата возврата
+    private LocalDate dateReturn; // дата возврата
 }

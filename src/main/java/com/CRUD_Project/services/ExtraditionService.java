@@ -1,10 +1,14 @@
 package com.CRUD_Project.services;
 
+import com.CRUD_Project.dto.BookDTO;
+import com.CRUD_Project.dto.ExtraditionDTO;
 import com.CRUD_Project.entities.*;
+import com.CRUD_Project.mappers.ExtraditionMapper;
 import com.CRUD_Project.repositories.BookRepository;
 import com.CRUD_Project.repositories.ExtraditionRepository;
 import com.CRUD_Project.repositories.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,65 +18,94 @@ import java.util.Optional;
 public class ExtraditionService {
     @Autowired
     private ExtraditionRepository extraditionRepository;
-
     @Autowired
     private BookRepository bookRepository;
-
     @Autowired
     private ReaderRepository readerRepository;
 
     public ExtraditionService() {
     }
 
-    public String findExtradition(Integer id) {
+    public ResponseEntity<ExtraditionDTO> findExtradition(Integer id) {
         Optional<Extradition> extradition = extraditionRepository.findById(id);
-        return extradition.map(value -> "Найдена выдача: книга " + value.getBook().getTitle() + " читатель " + value.getReader().getName() + ", дата выдачи: " + value.getDateIssue() + ", дата возврата: " + value.getDateReturn())
-                .orElse("Выдачи с id " + id + " не существует!");
+        return extradition.map(value -> ResponseEntity.ok(ExtraditionMapper.INSTANCE.toDTO(value)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public List<Extradition> findAll() {
-        return extraditionRepository.findAll();
+    public ResponseEntity<List<ExtraditionDTO>> findAll() {
+        List<Extradition> extraditions = extraditionRepository.findAll();
+        return ResponseEntity.ok(ExtraditionMapper.INSTANCE.toDTOList(extraditions));
     }
 
-    public String create(Integer bookId, Integer readerId, String dateIssue, String dateReturn) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Книга с id" + bookId +  "не найдена"));
+    public ResponseEntity<?> create(ExtraditionDTO extraditionDTO) {
+        Optional<Book> bookOpt = bookRepository.findById(extraditionDTO.bookId());
+        Optional<Reader> readerOpt = readerRepository.findById(extraditionDTO.readerId());
 
-        Reader reader = readerRepository.findById(readerId)
-                .orElseThrow(() -> new RuntimeException("Читатель с id" + readerId +  "не найден"));
+        if (bookOpt.isPresent() && readerOpt.isPresent()) {
+            // Проверяем, существует ли уже выдача с такими параметрами
+            Optional<Extradition> existingExtraditionOpt = extraditionRepository.
+                    findByBookAndReaderAndDateIssueAndDateReturn(
+                    bookOpt.get(), readerOpt.get(), extraditionDTO.dateIssue(),extraditionDTO.dateReturn());
 
-        Extradition extradition = Extradition.builder()
-                .book(book)
-                .reader(reader)
-                .dateIssue(dateIssue)
-                .dateReturn(dateReturn)
-                .build();
+            if (existingExtraditionOpt.isPresent()) {
+                return ResponseEntity.badRequest().body("Выдача с указанными параметрами уже существует");
+            }
 
-        extraditionRepository.save(extradition);
-        return "Выдача создана успешно!";
+            // Создаем новую выдачу
+            Extradition extradition = ExtraditionMapper.INSTANCE.toEntity(extraditionDTO);
+            extradition.setBook(bookOpt.get());
+            extradition.setReader(readerOpt.get());
+            Extradition savedExtradition = extraditionRepository.save(extradition);
+            ExtraditionDTO savedExtraditionDTO = ExtraditionMapper.INSTANCE.toDTO(savedExtradition);
+            return ResponseEntity.ok(savedExtraditionDTO);
+        } else {
+            return ResponseEntity.badRequest().body("Книга или Читатель с указанным id не существует");
+        }
     }
 
-    public String delete(Integer id) {
-        Optional<Extradition> extraditionOptional = extraditionRepository.findById(id);
-        if (extraditionOptional.isPresent()) {
-            extraditionRepository.delete(extraditionOptional.get());
-            return "Выдача с id " + id + " была удалена";
-        } else return "Выдачи с id " + id + " не существует!";
+    public ResponseEntity<String> delete(Integer id) {
+        if (extraditionRepository.existsById(id)) {
+            extraditionRepository.deleteById(id);
+            return ResponseEntity.ok("Выдача с id " + id + " успешно удалена.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public String edit(Integer id, Integer bookId, Integer readerId, String dateIssue, String dateReturn) {
-        Optional<Extradition> extraditionOptional = extraditionRepository.findById(id);
-        Optional<Book> book = bookRepository.findById(bookId);
-        Optional<Reader> reader = readerRepository.findById(readerId);
+    public ResponseEntity<?> edit(Integer id, ExtraditionDTO extraditionDTO) {
+        Optional<Extradition> existingExtraditionOpt = extraditionRepository.findById(id);
+        if (existingExtraditionOpt.isPresent()) {
+            Extradition existingExtradition = existingExtraditionOpt.get();
 
-        if (extraditionOptional.isPresent() && book.isPresent() && reader.isPresent()) {
-            Extradition extradition = extraditionOptional.get();
-            extradition.setBook(book.get());
-            extradition.setReader(reader.get());
-            extradition.setDateIssue(dateIssue);
-            extradition.setDateReturn(dateReturn);
-            extraditionRepository.save(extradition);
-            return "Выдача с id " + id + " была изменена.";
-        } else return "Выдачи с id " + id + " не существует или Книга/Читатель не найдены!";
+            Optional<Book> bookOpt = bookRepository.findById(extraditionDTO.bookId());
+            Optional<Reader> readerOpt = readerRepository.findById(extraditionDTO.readerId());
+
+            if (bookOpt.isPresent() && readerOpt.isPresent()) {
+
+
+                existingExtradition.setBook(bookOpt.get());
+                existingExtradition.setReader(readerOpt.get());
+
+                // Проверяем, существует ли уже выдача с такими параметрами
+                Optional<Extradition> existingExtraditionOpt2 = extraditionRepository.
+                        findByBookAndReaderAndDateIssueAndDateReturn(
+                        bookOpt.get(), readerOpt.get(), extraditionDTO.dateIssue(),extraditionDTO.dateReturn());
+
+                if (existingExtraditionOpt2.isPresent()) {
+                    return ResponseEntity.badRequest().body("Выдача с указанными параметрами уже существует");
+                }
+
+                existingExtradition.setDateIssue(extraditionDTO.dateIssue());
+                existingExtradition.setDateReturn(extraditionDTO.dateReturn());
+
+                Extradition savedExtradition = extraditionRepository.save(existingExtradition);
+                ExtraditionDTO savedExtraditionDTO = ExtraditionMapper.INSTANCE.toDTO(savedExtradition);
+                return ResponseEntity.ok(savedExtraditionDTO);
+            } else {
+                return ResponseEntity.badRequest().body("Книга или Читатель не найден");
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
