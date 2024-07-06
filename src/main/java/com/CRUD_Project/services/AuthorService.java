@@ -40,17 +40,6 @@ public class AuthorService {
         return ResponseEntity.ok(savedAuthorDTO);
     }
 
-//    public ResponseEntity<AuthorDTO> createAuthor(AuthorDTO authorDTO) {
-//        Author author = Author.builder()
-//                .name(authorDTO.name())
-//                .surname(authorDTO.surname())
-//                .build();
-//        Author savedAuthor = authorRepository.save(author);
-//        AuthorDTO savedAuthorDTO = AuthorMapper.INSTANCE.toDTO(savedAuthor);
-//        return ResponseEntity.ok(savedAuthorDTO);
-//    }
-
-
     public ResponseEntity<String> deleteAuthor(Integer id) {
         Optional<Author> existingReader = authorRepository.findById(id);
         if (existingReader.isPresent()) {
