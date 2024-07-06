@@ -1,39 +1,44 @@
 package com.CRUD_Project.controllers;
 
+import com.CRUD_Project.dto.GenreBookDTO;
+import com.CRUD_Project.dto.ReaderDTO;
 import com.CRUD_Project.entities.GenreBook;
 import com.CRUD_Project.services.GenreBookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/genre")
 public class GenreBookController {
+
     @Autowired
     private GenreBookService genreBookService;
 
-    @GetMapping("/genre/{id}") // поиск жанра по id
-    public String findGenreById(@PathVariable(value = "id") Integer id) {
+    @GetMapping("/{id}") // поиск жанра по id
+    public ResponseEntity<GenreBookDTO> findGenreById(@PathVariable(value = "id") Integer id) {
         return genreBookService.findGenre(id);
     }
 
-    @GetMapping("/genres") // вывод всех жанров
-    public List<GenreBook> findAllGenres() {
+    @GetMapping("/all") // вывод всех жанров
+    public ResponseEntity<List<GenreBookDTO>> findAllGenres() {
         return genreBookService.findAll();
     }
 
-    @PostMapping("/genre/create") // создать жанр
-    public String createGenre(@RequestParam String name) {
-        return genreBookService.create(name);
+    @PostMapping("/create") // создать жанр
+    public ResponseEntity<?> createGenre(@RequestBody GenreBookDTO genreBookDTO) {
+        return genreBookService.create(genreBookDTO);
     }
 
-    @PostMapping("/genre/{id}/edit") // изменение названия жанра
-    public String editGenre(@PathVariable(value = "id") Integer id, @RequestParam String name) {
-        return genreBookService.edit(id, name);
+    @PutMapping("/{id}/edit") //изменения полей читателя
+    public ResponseEntity<GenreBookDTO> editGenre(@PathVariable Integer id, @RequestBody GenreBookDTO genreBookDTO) {
+        return genreBookService.edit(id, genreBookDTO);
     }
 
-    @PostMapping("/genre/{id}/remove") // удаление жанра по id
-    public String deleteGenre(@PathVariable(value = "id") Integer id) {
+    @DeleteMapping("/{id}/remove") // удаляем читателя по id
+    public ResponseEntity<String> deleteGenre(@PathVariable(value = "id") Integer id) {
         return genreBookService.delete(id);
     }
 }

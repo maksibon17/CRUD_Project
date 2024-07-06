@@ -31,8 +31,7 @@ public class ReaderController {
     }
 
     @PutMapping("/{id}/edit") //изменения полей читателя
-    public ResponseEntity<ReaderDTO> editReader(@PathVariable Integer id,
-                                                @RequestBody ReaderDTO readerDTO){
+    public ResponseEntity<ReaderDTO> editReader(@PathVariable Integer id, @RequestBody ReaderDTO readerDTO){
         return readerService.edit(id,readerDTO);
     }
 
