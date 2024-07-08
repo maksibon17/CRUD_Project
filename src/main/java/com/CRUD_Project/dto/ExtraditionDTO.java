@@ -1,11 +1,18 @@
 package com.CRUD_Project.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
-import java.util.Date;
 
 public record ExtraditionDTO(
-    Integer bookId,
-    Integer readerId,
-    LocalDate dateIssue,
-    LocalDate dateReturn) {
+        @Schema(description = "ID книги", example = "1")
+        Integer bookId,
+
+        @Schema(description = "ID читателя", example = "1")
+        Integer readerId,
+
+        @Schema(description = "Дата выдачи книги", example = "2023-07-01")
+        LocalDate dateIssue,
+
+        @Schema(description = "Дата возврата книги", example = "2023-07-15")
+        LocalDate dateReturn) {
 }

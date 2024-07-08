@@ -1,10 +1,14 @@
 package com.CRUD_Project.dto;
 
-import com.CRUD_Project.entities.Author;
-import com.CRUD_Project.entities.GenreBook;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public record BookDTO(
-    String title,
-    Integer authorId,
-    Integer genreBookId) {
+        @Schema(description = "Название книги", example = "Мы")
+        String title,
+
+        @Schema(description = "ID автора книги", example = "1")
+        Integer authorId,
+
+        @Schema(description = "ID жанра книги", example = "2")
+        Integer genreBookId) {
 }
