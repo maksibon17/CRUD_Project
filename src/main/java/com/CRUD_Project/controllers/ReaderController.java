@@ -12,8 +12,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/readers")
 public class ReaderController {
-    @Autowired
-    private ReaderService readerService;
+    private final ReaderService readerService;
+
+    public ReaderController(ReaderService readerService) {
+        this.readerService = readerService;
+    }
 
     @GetMapping // вывод всех читателей
     public ResponseEntity<List<ReaderDTO>> findAllReaders() {

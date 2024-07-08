@@ -14,8 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
-    @Autowired
-    private AuthorService authorService;
+    private final AuthorService authorService;
+
+    public AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
+    }
 
     @GetMapping// вывод всех авторов
     public ResponseEntity<List<AuthorDTO>> gelAllAuthors() {

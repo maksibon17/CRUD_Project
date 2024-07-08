@@ -11,8 +11,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/extraditions")
 public class ExtraditionController {
-    @Autowired
-    private ExtraditionService extraditionService;
+    private final ExtraditionService extraditionService;
+
+    public ExtraditionController(ExtraditionService extraditionService) {
+        this.extraditionService = extraditionService;
+    }
 
     @GetMapping // вывод всех выдач
     public ResponseEntity<List<ExtraditionDTO>> findAllExtraditions() {

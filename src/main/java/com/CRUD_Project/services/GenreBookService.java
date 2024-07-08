@@ -16,17 +16,16 @@ import java.util.Optional;
 
 @Service
 public class GenreBookService {
-    @Autowired
-    private GenreBookRepository genreBookRepository;
+    private final GenreBookRepository genreBookRepository;
 
-    public GenreBookService() {
+    public GenreBookService(GenreBookRepository genreBookRepository) {
+        this.genreBookRepository = genreBookRepository;
     }
 
     public ResponseEntity<GenreBookDTO> findGenre(Integer id) {
         Optional<GenreBook> genreBook = genreBookRepository.findById(id);
-        return genreBook.isPresent()
-                ? ResponseEntity.ok(GenreBookMapper.INSTANCE.toDTO(genreBook.get()))
-                : ResponseEntity.notFound().build();
+        return genreBook.map(book -> ResponseEntity.ok(GenreBookMapper.INSTANCE.toDTO(book)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     public ResponseEntity<List<GenreBookDTO>> findAll() {

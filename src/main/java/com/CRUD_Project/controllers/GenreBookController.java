@@ -13,9 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/genres")
 public class GenreBookController {
+    private final GenreBookService genreBookService;
 
-    @Autowired
-    private GenreBookService genreBookService;
+    public GenreBookController(GenreBookService genreBookService) {
+        this.genreBookService = genreBookService;
+    }
 
     @GetMapping // вывод всех жанров
     public ResponseEntity<List<GenreBookDTO>> findAllGenres() {
