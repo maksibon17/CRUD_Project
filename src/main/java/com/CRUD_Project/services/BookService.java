@@ -17,15 +17,19 @@ import java.util.Optional;
 
 @Service
 public class BookService {
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private AuthorRepository authorRepository;
-    @Autowired
-    private GenreBookRepository genreBookRepository;
 
-    public BookService() {
+    private final BookRepository bookRepository;
+
+    private final AuthorRepository authorRepository;
+
+    private final GenreBookRepository genreBookRepository;
+
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, GenreBookRepository genreBookRepository) {
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+        this.genreBookRepository = genreBookRepository;
     }
+
 
     public ResponseEntity<BookDTO> findBook(Integer id) {
         Optional<Book> book = bookRepository.findById(id);

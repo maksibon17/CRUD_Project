@@ -16,16 +16,16 @@ import java.util.Optional;
 
 @Service
 public class AuthorService {
-    @Autowired
-    private AuthorRepository authorRepository;
 
-    public AuthorService() {
+    private final AuthorRepository authorRepository;
+
+    public AuthorService(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
     }
     public ResponseEntity<AuthorDTO> getAuthorById(Integer id) {
         Optional<Author> author = authorRepository.findById(id);
-        return author.isPresent()
-                ? ResponseEntity.ok(AuthorMapper.INSTANCE.toDTO(author.get()))
-                : ResponseEntity.notFound().build();
+        return author.map(value -> ResponseEntity.ok(AuthorMapper.INSTANCE.toDTO(value)))
+                .orElse(ResponseEntity.notFound().build());
     }
     public ResponseEntity<List<AuthorDTO>> gelAllAuthors() {
         List<Author> authors = authorRepository.findAll();

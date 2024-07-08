@@ -13,16 +13,15 @@ import java.util.Optional;
 
 @Service
 public class ReaderService {
-    @Autowired
-    private ReaderRepository readerRepository;
+    private final ReaderRepository readerRepository;
 
-    public ReaderService() {
+    public ReaderService(ReaderRepository readerRepository) {
+        this.readerRepository = readerRepository;
     }
     public ResponseEntity<ReaderDTO> findReader(Integer id) {
         Optional<Reader> reader = readerRepository.findById(id);
-        return reader.isPresent()
-                ? ResponseEntity.ok(ReaderMapper.INSTANCE.toDTO(reader.get()))
-                : ResponseEntity.notFound().build();
+        return reader.map(value -> ResponseEntity.ok(ReaderMapper.INSTANCE.toDTO(value)))
+                .orElse(ResponseEntity.notFound().build());
     }
     public ResponseEntity<List<ReaderDTO>> findAll() {
         List<Reader> readers = readerRepository.findAll();

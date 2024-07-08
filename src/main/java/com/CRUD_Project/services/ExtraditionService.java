@@ -16,14 +16,16 @@ import java.util.Optional;
 
 @Service
 public class ExtraditionService {
-    @Autowired
-    private ExtraditionRepository extraditionRepository;
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private ReaderRepository readerRepository;
+    private final ExtraditionRepository extraditionRepository;
+    private final BookRepository bookRepository;
+    private final ReaderRepository readerRepository;
 
-    public ExtraditionService() {
+    public ExtraditionService(ExtraditionRepository extraditionRepository,
+                              BookRepository bookRepository,
+                              ReaderRepository readerRepository) {
+        this.extraditionRepository = extraditionRepository;
+        this.bookRepository = bookRepository;
+        this.readerRepository = readerRepository;
     }
 
     public ResponseEntity<ExtraditionDTO> findExtradition(Integer id) {

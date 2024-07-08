@@ -9,17 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/extradition")
+@RequestMapping("/extraditions")
 public class ExtraditionController {
-    @Autowired
-    private ExtraditionService extraditionService;
+    private final ExtraditionService extraditionService;
 
-    @GetMapping("/{id}") // поиск выдачи по id
-    public ResponseEntity<ExtraditionDTO> findExtraditionById(@PathVariable(value = "id") Integer id) {
-        return extraditionService.findExtradition(id);
+    public ExtraditionController(ExtraditionService extraditionService) {
+        this.extraditionService = extraditionService;
     }
 
-    @GetMapping("/all") // вывод всех выдач
+    @GetMapping // вывод всех выдач
     public ResponseEntity<List<ExtraditionDTO>> findAllExtraditions() {
         return extraditionService.findAll();
     }
@@ -29,12 +27,18 @@ public class ExtraditionController {
         return extraditionService.create(extraditionDTO);
     }
 
-    @PutMapping("/{id}/edit") // изменение полей выдачи
-    public ResponseEntity<?> editExtradition(@PathVariable(value = "id") Integer id, @RequestBody ExtraditionDTO extraditionDTO) {
+    @GetMapping("/{id}") // поиск выдачи по id
+    public ResponseEntity<ExtraditionDTO> findExtraditionById(@PathVariable(value = "id") Integer id) {
+        return extraditionService.findExtradition(id);
+    }
+
+    @PutMapping("/{id}") // изменение полей выдачи
+    public ResponseEntity<?> editExtradition(@PathVariable(value = "id") Integer id,
+                                             @RequestBody ExtraditionDTO extraditionDTO) {
         return extraditionService.edit(id, extraditionDTO);
     }
 
-    @DeleteMapping("/{id}/remove") // удаление выдачи по id
+    @DeleteMapping("/{id}") // удаление выдачи по id
     public ResponseEntity<String> deleteExtradition(@PathVariable(value = "id") Integer id) {
         return extraditionService.delete(id);
     }
