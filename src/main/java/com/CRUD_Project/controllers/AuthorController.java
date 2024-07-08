@@ -1,11 +1,10 @@
 package com.CRUD_Project.controllers;
 
 import com.CRUD_Project.dto.AuthorDTO;
-import com.CRUD_Project.dto.ReaderDTO;
-import com.CRUD_Project.entities.Author;
 import com.CRUD_Project.services.AuthorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
+@Tag(name = "Авторы",
+     description = "Операции, связанные с авторами")
 public class AuthorController {
     private final AuthorService authorService;
 
@@ -20,29 +21,48 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @GetMapping// вывод всех авторов
-    public ResponseEntity<List<AuthorDTO>> gelAllAuthors() {
+    @GetMapping
+    @Operation(summary = "Получить список всех авторов.",
+               description = "Возвращает список всех авторов в системе")
+    public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
         return authorService.gelAllAuthors();
     }
 
-    @PostMapping("/create") // создать автора
-    public ResponseEntity<AuthorDTO> createAuthor(@RequestBody AuthorDTO authorDTO) {
+    @PostMapping("/create")
+    @Operation(summary = "Создать автора",
+               description = "Создает нового автора в системе на основе предоставленного объекта AuthorDTO")
+    public ResponseEntity<AuthorDTO> createAuthor(
+            @Parameter(description = "Объект AuthorDTO для создания нового автора", required = true)
+            @RequestBody AuthorDTO authorDTO) {
         return authorService.createAuthor(authorDTO);
     }
 
-    @GetMapping("/{id}") // поиск автора по id
-    public ResponseEntity<AuthorDTO> getAuthor(@PathVariable(value = "id") Integer id) {
+    @GetMapping("/{id}")
+    @Operation(summary = "Найти автора по ID",
+               description = " Возвращает информацию об авторе с указанным ID")
+    public ResponseEntity<AuthorDTO> getAuthorById(
+            @Parameter(description = "ID автора", required = true)
+            @PathVariable(value = "id") Integer id) {
         return authorService.getAuthorById(id);
     }
 
-    @PutMapping("/{id}") // изменение полей автора
-    public ResponseEntity<AuthorDTO> editAuthor(@PathVariable(value = "id") Integer id,
-                                                @RequestBody AuthorDTO authorDTO) {
+    @PutMapping("/{id}")
+    @Operation(summary = "Обновить информацию об авторе",
+               description = "Обновляет информацию об авторе с указанным ID на основе предоставленного объекта AuthorDTO")
+    public ResponseEntity<AuthorDTO> editAuthor(
+            @Parameter(description = "ID автора", required = true)
+            @PathVariable(value = "id") Integer id,
+            @Parameter(description = "Обновленная информация об авторе", required = true)
+            @RequestBody AuthorDTO authorDTO) {
         return authorService.updateAuthor(id, authorDTO);
     }
 
-    @DeleteMapping("/{id}") // удаление автора по id
-    public ResponseEntity<String> deleteAuthor(@PathVariable(value = "id") Integer id) {
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удалить автора",
+               description = " Удаляет автора с указанным ID из системы.")
+    public ResponseEntity<String> deleteAuthor(
+            @Parameter(description = "ID автора", required = true)
+            @PathVariable(value = "id") Integer id) {
         return authorService.deleteAuthor(id);
     }
 }
