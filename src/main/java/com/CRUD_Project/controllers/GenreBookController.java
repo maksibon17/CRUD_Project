@@ -11,18 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/genres")
 public class GenreBookController {
 
     @Autowired
     private GenreBookService genreBookService;
 
-    @GetMapping("/{id}") // поиск жанра по id
-    public ResponseEntity<GenreBookDTO> findGenreById(@PathVariable(value = "id") Integer id) {
-        return genreBookService.findGenre(id);
-    }
-
-    @GetMapping("/all") // вывод всех жанров
+    @GetMapping // вывод всех жанров
     public ResponseEntity<List<GenreBookDTO>> findAllGenres() {
         return genreBookService.findAll();
     }
@@ -32,12 +27,18 @@ public class GenreBookController {
         return genreBookService.create(genreBookDTO);
     }
 
-    @PutMapping("/{id}/edit") //изменения полей читателя
-    public ResponseEntity<GenreBookDTO> editGenre(@PathVariable Integer id, @RequestBody GenreBookDTO genreBookDTO) {
+    @GetMapping("/{id}") // поиск жанра по id
+    public ResponseEntity<GenreBookDTO> findGenreById(@PathVariable(value = "id") Integer id) {
+        return genreBookService.findGenre(id);
+    }
+
+    @PutMapping("/{id}") //изменения полей читателя
+    public ResponseEntity<GenreBookDTO> editGenre(@PathVariable Integer id,
+                                                  @RequestBody GenreBookDTO genreBookDTO) {
         return genreBookService.edit(id, genreBookDTO);
     }
 
-    @DeleteMapping("/{id}/remove") // удаляем читателя по id
+    @DeleteMapping("/{id}") // удаляем читателя по id
     public ResponseEntity<String> deleteGenre(@PathVariable(value = "id") Integer id) {
         return genreBookService.delete(id);
     }
