@@ -44,7 +44,7 @@ public class AuthorService {
         Optional<Author> existingReader = authorRepository.findById(id);
         if (existingReader.isPresent()) {
             authorRepository.deleteById(id);
-            return ResponseEntity.ok("Читатель с id " + id + " успешно удалён.");
+            return ResponseEntity.ok("Автор с id " + id + " успешно удалён.");
         } else {
             return ResponseEntity.status(404).body("Пользователя с id " + id + " не существует!");
         }
